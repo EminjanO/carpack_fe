@@ -1,0 +1,62 @@
+﻿@model CarPack.Utils.ViewModels.IndexViewModel
+
+@{
+    ViewBag.Title = "Reports";
+}
+
+<h2>Reports</h2>
+
+<div>
+    <h4>ReportModel</h4>
+
+    @{
+        foreach (var item in Model.Reports)
+        {
+            <hr />
+            <dl @*class="dl-horizontal"*@>
+                <dt>
+                    Vehicle :
+                </dt>
+
+                <dd>
+                    @Html.DisplayName(item.Vehicle_Reference) :
+                </dd>
+
+                <dt>
+                    Chassis number :
+                </dt>
+
+                <dd>
+                    @Html.DisplayName(item.Chassis)
+                </dd>
+
+                <dt>
+                    Registered :
+                </dt>
+
+                <dd>
+                    @Html.DisplayName(item.Registration.ToString())
+                </dd>
+
+                <dt>
+                    Deresitered :
+                </dt>
+
+                <dd>
+                    @Html.DisplayName(item.Deregistration.ToString())
+                </dd>
+                <dt>Details</dt>
+                @foreach (var v in item.virtualEvents)
+                {
+                   
+                <dd>@v.Client_id from @v.Starttime.ToString().Substring(0,11) to @v.Endtime.ToString().Substring(0, 11)</dd>
+                }
+            </dl>
+        }
+    }
+
+</div>
+<p>
+   @* @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to List", "Index")
+</p>

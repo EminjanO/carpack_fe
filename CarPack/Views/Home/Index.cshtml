@@ -1,0 +1,484 @@
+﻿@model CarPack.Utils.ViewModels.IndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div id="calender"></div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+            </div>
+            <div class="modal-body">
+                @{
+                    if (@ViewBag.isApprobator)
+                    {
+                        <p>je suis @Model.UserModels.Where(s => s.Id == ViewBag.currentUserId).FirstOrDefault().Department_id  @ViewBag.lastEventId</p>
+                        <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                            <span class="glyphicon glyphicon-remove"></span> No
+                        </button>
+                        @*<button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                                <span class="glyphicon glyphicon-pencil"></span> Edit
+                            </button>*@
+                        <button id="btnApprove" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                            <span class="glyphicon glyphicon-ok"></span> Approve
+                        </button>
+                    }
+                }
+                <p id="pDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@{
+    if (@Model.UserprofilModels.Any(x => x.User_id == ViewBag.currentUserId && x.Profil_id == 1))
+    {
+        <div id="myModalSave" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Save Event</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="col-12 form-horizontal">
+                            <input type="hidden" id="hdEventID" value="0" />
+                            <input type="hidden" id="hdUserId" value="0" />
+                            <input type="hidden" id="hdStateId" value="0" />
+                            <input type="hidden" id="hdIsActive" value="0" />
+                            <input type="hidden" id="hdCreateDate" value="0" />
+                            <input type="hidden" id="hdLastUpdate" value="0" />
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input type="text" id="txtSubject" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Start</label>
+                                <div class="input-group date" id="dtp1">
+                                    <input type="text" id="txtStart" class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>End</label>
+                                <div class="input-group date" id="dtp2">
+                                    <input type="text" id="txtEnd" class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Clients</label>
+                                @Html.DropDownListFor(model => model.IdClientModel, new SelectList(Model.Clients, "Id", "ValueConcatinated"), new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Reasons</label>
+                                @Html.DropDownListFor(model => model.IdReasonModel, new SelectList(Model.ReasonModels, "Id", "eventreason_name"), new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Vehicles</label>
+                                @Html.DropDownListFor(model => model.IdVehicleModel, new SelectList(Model.Vehicles, "Id", "Plate"), new { @class = "form-control" })
+                            </div>
+                            <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+@*<div id="myModalSave" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Save Event</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="col-12 form-horizontal">
+                        <input type="hidden" id="hdEventID" value="0" />
+                        <input type="hidden" id="hdUserId" value="0" />
+                        <input type="hidden" id="hdStateId" value="0" />
+                        <input type="hidden" id="hdIsActive" value="0" />
+                        <input type="hidden" id="hdCreateDate" value="0" />
+                        <input type="hidden" id="hdLastUpdate" value="0" />
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" id="txtSubject" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Start</label>
+                            <div class="input-group date" id="dtp1">
+                                <input type="text" id="txtStart" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>End</label>
+                            <div class="input-group date" id="dtp2">
+                                <input type="text" id="txtEnd" class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Clients</label>
+                            @Html.DropDownListFor(model => model.IdClientModel, new SelectList(Model.Clients, "Id", "ValueConcatinated"), new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Reasons</label>
+                            @Html.DropDownListFor(model => model.IdReasonModel, new SelectList(Model.ReasonModels, "Id", "eventreason_name"), new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicles</label>
+                            @Html.DropDownListFor(model => model.IdVehicleModel, new SelectList(Model.Vehicles, "Id", "Plate"), new { @class = "form-control" })
+                        </div>
+                        <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<link href="~/Content/fullcalendar.css" rel="stylesheet" />
+<link href="~/Content/fullcalendar.print.css" rel="stylesheet" media="print" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar-scheduler/1.9.4/scheduler.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+@section Scripts{
+    <script src="~/Scripts/moment.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>*@
+    <script src="~/Scripts/fullcalendar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar-scheduler/1.9.4/scheduler.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var events = [];
+            var resources = [];
+
+            var selectedEvent = null;
+            FetchEventAndRenderCalendar();
+
+            function FetchEventAndRenderCalendar() {
+                events = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/home/GetEvents",
+                    success: function (data) {
+                        var byIsActive = data.Events.slice(0);
+                        var result = $.grep(byIsActive,
+                            function (h) {
+                                return h.IsActive == true;
+                            });
+                        //console.log(result)
+                        for (var i = 0; i < result.length; i++) {
+                            // console.log(result[i].Id, result[i].State_id);
+                            events.push({
+                                eventID: result[i]["Id"],
+                                title: result[i]["Subject"], //Subject,
+                                description: result[i]["Description"],
+                                user_id: result[i]["User_id"],
+                                state_id: result[i]["State_id"],
+                                resourceId: result[i]["Vehicle_id"].toString(),
+                                client_id: result[i]["Client_id"],
+                                reason_id: result[i]["Reason_id"].toString(),
+                                isActive: result[i]["IsActive"],
+                                start: moment(result[i]["Starttime"]),
+                                end: moment(result[i]["Endtime"]),
+                                create_date: moment(result[i]["Create_date"]),
+                                last_update: moment(result[i]["Last_update"]),
+                                color:
+                                    result[i]["State_id"] == 1 && result[i]["Reason_id"] < 4
+                                        ? "orange"
+                                        : result[i]["State_id"] == 2 && result[i]["Reason_id"] < 4
+                                            ? "blue"
+                                            : result[i]["State_id"] == 3 && result[i]["Reason_id"] < 4
+                                                ? "green"
+                                                : result[i]["Reason_id"] == 4
+                                                    ? "darkgray"
+                                                    : result[i]["Reason_id"] == 5
+                                                        ? "red"
+                                                        : "azure"
+                            });
+                            // console.log(events[i].color);
+                        }
+                        for (var i = 0; i < data.Vehicles.length; i++) {
+                            if (data.Vehicles[i]["Visible_in_schedule"]) {
+                                resources.push({
+                                    id: data.Vehicles[i]["Id"].toString(),
+                                    title: data.Vehicles[i]["Mark"] +
+                                        " " +
+                                        data.Vehicles[i]["Model"] +
+                                        " " +
+                                        data.Vehicles[i]["Plate"]
+                                });
+                                //console.log(resources, "this is resource from ajax");
+                            }
+                        }
+                        // //DepartmentModels
+                        // for (var i = 0; i < 5; i++) {
+                        //     ////var element = {};
+                        //     ////element.id = data.DepartmentModels[i]["Id"].toString();
+                        //     ////element.title = data.DepartmentModels[i]["Department_name"];
+                        //     resources.push({
+                        //         id: data.DepartmentModels[i]["Id"].toString(),
+                        //         title: data.DepartmentModels[i]["Department_name"]
+                        //     });
+                        //     if (data.DepartmentModels[i]["VirtualVehicleModels"].length > 0) {
+                        //         //element.children = [];
+                        //         resources[i].children = [];
+                        //         for (var j = 0; j < data.DepartmentModels[i].VirtualVehicleModels.length; j++) {
+                        //             //console.log(data.DepartmentModels[i].VirtualVehicleModels[j]["Visible_in_schedule"], 'halo')
+                        //             if (data.DepartmentModels[i].VirtualVehicleModels[j]["Visible_in_schedule"]==true) {
+                        //                 resources[i].children.push({
+                        //                     id: data.DepartmentModels[i].VirtualVehicleModels[j]["Id"].toString(),
+                        //                     title: data.DepartmentModels[i].VirtualVehicleModels[j]["Mark"] + " " + data.DepartmentModels[i].VirtualVehicleModels[j]["Model"] + " " + data.DepartmentModels[i].VirtualVehicleModels[j]["Plate"]
+                        //                 });
+                        //                 console.log(j)
+                        //                 //element.children[j] = {
+                        //                 //    id: data.DepartmentModels[i].VirtualVehicleModels[j]["Id"].toString(),
+                        //                 //    title: data.DepartmentModels[i].VirtualVehicleModels[j]["Mark"] + " " + data.DepartmentModels[i].VirtualVehicleModels[j]["Model"] + " " + data.DepartmentModels[i].VirtualVehicleModels[j]["Plate"]
+                        //                 //}
+                        //                 //console.log(resources, "this is resource from ajax");
+                        //             }
+                        //         }
+                        //         console.log(resources[i].children, "this  resources[i].children resource from ajax");
+                        //     }
+                        //     //resources.push($.extend({}, element));
+                        // }
+                        // //console.log(element, "this is resource from ajax for elements");
+                        // //console.log(element2.children, "this is resource from ajax for elements cildren");
+                        // console.log(resources, "this is resource from ajax");
+
+                        resources.push({ userprofilModels: data.UserprofilModels });
+                        GenerateCalender(events, resources);
+                    },
+                    error: function (error) {
+                        alert('failed');
+                    }
+
+                });
+            }
+
+            function GenerateCalender(events, resources) {
+                //console.log(events);
+                console.log(resources, " source is here")
+                $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar({
+                    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+                    contentHeight: 500,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    defaultView: 'timelineMonth',
+                    header: {
+                        left: 'today prev,next',
+                        center: 'title',
+                        right: 'timelineMonth,timelineYear'
+                    },
+                    resourceLabelText: 'Vehicle',
+                    resources: resources,
+                    //eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        selectedEvent = calEvent;
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>')
+                            .html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            $description.append($('<p/>')
+                                .html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        }
+                        $description.append($('<p/>').html('<b>Description:</b>' + "<pre>" + calEvent.description + " eventId " + calEvent.eventID + " " + calEvent.reason_id + "</pre>"));
+
+                        $('#myModal #pDetails').empty().html($description);
+                        //deactivate button
+                        if (calEvent.reason_id > 3) {
+                            $('#btnApprove').prop('disabled', true);
+                        } else {
+                            $('#btnApprove').prop('disabled', false);
+                        }
+
+                        $('#myModal').modal();
+                    },
+                    selectable: true,
+                    select: function (start, end) {
+                        selectedEvent = {
+                            eventID: 0,
+                            title: "",
+                            description: "",
+                            user_id: 0,
+                            state_id: 0,
+                            resourceId: 0,
+                            client_id: 0,
+                            reason_id: 0,
+                            isActive: true,
+                            start: start,
+                            end: end,
+                            create_date: moment(Date.now()),
+                            last_update: moment(Date.now()),
+                            color: ""
+                        };
+                        openAddEditForm();
+                        $('#calendar').fullCalendar('unselect');
+                    }
+                });
+            }
+
+            $('#btnEdit').click(function () {
+                //Open modal dialog for edit event
+                openAddEditForm();
+            });
+            $('#btnApprove').click(function () {
+                if (selectedEvent != null && confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/home/ApproveEvent',
+                        data: { 'eventID': selectedEvent.eventID },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
+                                FetchEventAndRenderCalendar();
+                                $('#myModal').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Failed');
+                        }
+                    });
+                }
+            });
+            $('#btnDelete').click(function () {
+                if (selectedEvent != null && confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/home/DeleteEvent',
+                        data: { 'eventID': selectedEvent.eventID },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
+                                FetchEventAndRenderCalendar();
+                                $('#myModal').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Failed');
+                        }
+                    });
+                }
+            });
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm A'
+            });
+
+            function openAddEditForm() {
+                if (selectedEvent != null) {
+                    $('#hdEventID').val(selectedEvent.eventID);
+                    $("#hdUserId").val(selectedEvent.user_id);
+                    $("#hdStateId").val(selectedEvent.state_id);
+                    $("#hdIsActive").val(selectedEvent.isActive);
+                    $("#hdCreateDate").val(selectedEvent.create_date.format('DD/MM/YYYY HH:mm A'));
+                    $("#hdLastUpdate").val(selectedEvent.last_update.format('DD/MM/YYYY HH:mm A'));
+                    $('#txtSubject').val(selectedEvent.title);
+                    $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                    $('#txtEnd').val(selectedEvent.end.format('DD/MM/YYYY HH:mm A'));
+                    $('#txtDescription').val(selectedEvent.description);
+                    $('#IdReasonModel').val(selectedEvent.reason_id);
+                    $('#IdVehicleModel').val(selectedEvent.resourceId);
+                    $('#IdClientModel').val(selectedEvent.client_id);
+                }
+                $('#myModal').modal('hide');
+                $('#myModalSave').modal();
+            }
+
+            $('#btnSave').click(function () {
+                //Validation/
+                if ($('#txtSubject').val().trim() == "") {
+                    alert('Subject required');
+                    return;
+                }
+                if ($('#txtStart').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+                if ($('#txtEnd').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+                if ($('#txtDescription').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+                var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+                var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                if (startDate > endDate) {
+                    alert('Invalid end date');
+                    return;
+                }
+                // console.log($('#hdEventID').val());
+                var data = {
+                    Id: $('#hdEventID').val(),
+                    Subject: $('#txtSubject').val().trim(),
+                    Description: $('#txtDescription').val(),
+                    User_id: $("#hdUserId").val(),
+                    State_id: $("#hdStateId").val(),
+                    Vehicle_id: $('#IdVehicleModel').val(),
+                    Client_id: $('#IdClientModel').val(),
+                    Reason_id: $('#IdReasonModel').val(),
+                    IsActive: $("#hdIsActive").val(),
+                    Starttime: $('#txtStart').val().trim(),
+                    Endtime: $('#txtEnd').val().trim(),
+                    Create_date: $("#hdCreateDate").val(),
+                    Last_update: $("#hdLastUpdate").val()
+                }
+                SaveEvent(data);
+                // call function for submit data to the server
+            });
+
+            function SaveEvent(data) {
+                $.ajax({
+                    type: "POST",
+                    url: '/home/SaveEvent',
+                    data: data,
+                    success: function (data) {
+                        if (data.status) {
+                            //Refresh the calender
+                            FetchEventAndRenderCalendar();
+                            $('#myModalSave').modal('hide');
+                        }
+                    },
+                    error: function () {
+                        alert('Failed');
+                    }
+                });
+            }
+        })
+    </script>
+}

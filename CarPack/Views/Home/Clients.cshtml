@@ -1,0 +1,98 @@
+﻿@using System.Activities.Statements
+@*@model IEnumerable<CarPack.Models.ClientModel>*@
+@model CarPack.Utils.ViewModels.IndexViewModel
+@{
+    ViewBag.Title = "Clients";
+}
+
+<h2>Clients</h2>
+
+@{
+    if (@Model.UserprofilModels.Any(x => x.Profil_id == 1))
+    {
+        <p>
+            @Html.ActionLink("Create New", "CreateClient", "Home")
+        </p>
+    }
+}
+<table class="table table-hover table-bordered table-condensed">
+    <tr>
+        <th>
+            @Html.DisplayName("Client Number")
+        </th>
+        <th>
+            @Html.DisplayName("Client Name")
+        </th>
+        <th>
+            @Html.DisplayName("Prefix")
+        </th>
+        <th>
+            @Html.DisplayName("Responsible")
+        </th>
+        <th>
+            @Html.DisplayName("Intern")
+        </th>
+        <th>
+            @Html.DisplayName("Email")
+        </th>
+        <th>
+            @Html.DisplayName("Address")
+        </th>
+        <th>
+            @Html.DisplayName("Create_date")
+        </th>
+        <th>
+            @Html.DisplayName("Last update")
+        </th>
+        <th>
+            @Html.DisplayName("ValueConcatinated")
+        </th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model.Clients)
+    {
+        if (item.IsActive)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Client_number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Client_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prefix)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Responsible)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsIntern)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Create_date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Last_update)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValueConcatinated)
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @Html.ActionLink("Edit", "EditClient", new { id = item.Id }, new { @class = "btn btn-primary btn-block btn-xs" })
+                        @Html.ActionLink("Delete", "DeleteClient", new { id = item.Id }, new { @class = "btn btn-danger  btn-block btn-xs", onclick = "return confirm('Are you sure you wanna delete this Client ?')" })
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+
+</table>

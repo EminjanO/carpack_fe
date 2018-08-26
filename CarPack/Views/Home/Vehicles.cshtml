@@ -1,0 +1,113 @@
+﻿@*@model IEnumerable<CarPack.Models.VehicleModel>*@
+@model CarPack.Utils.ViewModels.IndexViewModel
+
+@{
+    ViewBag.Title = "Vehicles";
+}
+
+<h2>Vehicles</h2>
+
+@{
+    if (@Model.UserprofilModels.Any(x => x.Profil_id == 1))
+    {
+        <p>
+            @Html.ActionLink("Create New", "CreateVehicle", "Home")
+        </p>
+    }
+}
+<table class="table table-hover table-bordered table-condensed">
+    <tr>
+        <th>
+            @Html.DisplayName("Mark")
+        </th>
+        <th>
+            @Html.DisplayName("Version")
+        </th>
+        <th>
+            @Html.DisplayName("Model")
+        </th>
+        <th>
+            @Html.DisplayName("Finition")
+        </th>
+        <th>
+            @Html.DisplayName("Chassis number")
+        </th>
+        <th>
+            @Html.DisplayName("Color extern")
+        </th>
+        <th>
+            @Html.DisplayName("Color intern")
+        </th>
+        <th>
+            @Html.DisplayName("Plate")
+        </th>
+        <th>
+            @Html.DisplayName("Garage reference")
+        </th>
+        <th>
+            @Html.DisplayName("First registration")
+        </th>
+        <th>
+            @Html.DisplayName("Create date")
+        </th>
+        <th>
+            @Html.DisplayName("Last update")
+        </th>
+        <th>
+            Actions
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Vehicles)
+    {
+        if (item.Visible_in_schedule)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Version)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Finition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Chassis_number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color_extern)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color_intern)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Plate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Garage_reference)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.First_registration).ToString().Substring(0,11)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Create_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Last_update)
+            </td>
+            <td>
+                <div class="btn-group">
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-info btn-block btn-xs" })
+                    @Html.ActionLink("Delete", "DeleteVehicle", new { id = item.Id }, new { @class = "btn btn-danger  btn-block btn-xs", onclick = "return confirm('Are you sure you wanna delete this Client ?')" })
+                </div>
+            </td>
+        </tr>
+        }
+    }
+
+</table>
