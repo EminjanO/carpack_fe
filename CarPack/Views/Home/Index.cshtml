@@ -330,6 +330,10 @@
                     },
                     selectable: true,
                     select: function (start, end) {
+                        if (start.isBefore(moment())) {
+                            $('#calendar').fullCalendar('unselect');
+                            return false;
+                        }; 
                         selectedEvent = {
                             eventID: 0,
                             title: "",
