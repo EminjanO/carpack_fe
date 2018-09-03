@@ -194,7 +194,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\VehicleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -217,6 +220,7 @@
     <Compile Include="Utils\Mappers\UserMapper.cs" />
     <Compile Include="Utils\Mappers\UserprofilMapper.cs" />
     <Compile Include="Utils\Mappers\VehicleMapper.cs" />
+    <Compile Include="Utils\Methods.cs" />
     <Compile Include="Utils\ViewModels\IndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +296,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\fullcalendar.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -343,11 +348,11 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Home\Clients.cshtml" />
-    <Content Include="Views\Home\Vehicles.cshtml" />
-    <Content Include="Views\Home\CreateClient.cshtml" />
-    <Content Include="Views\Home\CreateVehicle.cshtml" />
-    <Content Include="Views\Home\Reports.cshtml" />
+    <Content Include="Views\Client\Clients.cshtml" />
+    <Content Include="Views\Vehicle\Vehicles.cshtml" />
+    <Content Include="Views\Client\CreateClient.cshtml" />
+    <Content Include="Views\Vehicle\CreateVehicle.cshtml" />
+    <Content Include="Views\Report\Reports.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

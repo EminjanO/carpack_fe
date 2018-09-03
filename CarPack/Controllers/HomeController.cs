@@ -12,7 +12,7 @@ using CarPack.Utils.Mappers;
 using CarPack.Utils.ViewModels;
 using InOutFCA.DAL.Entity;
 using InOutFCA.DAL.Repository;
-// add some comment here for testing perpose
+// test test test commit
 namespace CarPack.Controllers
 {
     public class HomeController : Controller
@@ -394,7 +394,7 @@ namespace CarPack.Controllers
                             string Body = " Nouvelle réservation à approuver : \n <a href=\"http://localhost:63500\">CarPack System</a>" + 7;
                             string Cc = "";// on peut rajoute un addresse mail quelconque en tant que Cc
                             sendMail(senMail, MailToApproba.ToString(), Cc, sujet, Body, "");
-                            // insert data to the table EventAction....
+                            // insert data to the table EventAction...
                             var Users = UnitOfWork.Instance.UserRepository.GetUsersByDepartment(8).ToList();
                             foreach (var item in Users)
                             {
@@ -456,127 +456,8 @@ namespace CarPack.Controllers
             return new JsonResult { Data = new { status = status } };
         }
 
-        #region Clients
+        #region methods
 
-        public ActionResult Clients()
-        {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
-            int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
-
-            IndexViewModel index = new IndexViewModel();
-            index.Clients = UnitOfWork.Instance.ClientRepository.GetAll().Select(s => s.ToClient()).ToList();
-            index.UserprofilModels = UnitOfWork.Instance.UserprofilRepository.GetByUserId(currentUser).Select(s => s.ToClient()).ToList();
-
-            return View(index);
-        }
-        
-        public ActionResult CreateClient()
-        {
-            return View();
-        } 
-        [HttpPost]
-        public ActionResult CreateClient(ClientModel obj)
-        {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
-            int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
-            Client c = new Client();
-            c.User_id = currentUser;
-            c.Client_number = obj.Client_number;
-            c.Client_name = obj.Client_name;
-            c.Prefix = obj.Prefix;
-            c.Responsible = obj.Responsible;
-            c.IsIntern = obj.IsIntern;
-            c.Email = obj.Email;
-            c.Address = obj.Address;
-            c.Create_date = DateTime.Now;
-            UnitOfWork.Instance.ClientRepository.Insert(c);
-
-            return RedirectToAction("Clients");
-        }
-
-        public ActionResult DeleteClient(int Id)
-        {
-            UnitOfWork.Instance.ClientRepository.DeleteUpdate(Id);
-            return RedirectToAction("Clients");
-        }
-
-        #endregion
-
-        #region Vehicles
-
-        public ActionResult Vehicles()
-        {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
-            int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
-
-            IndexViewModel index = new IndexViewModel();
-            index.Vehicles = UnitOfWork.Instance.VehicleRepository.GetAll().Select(s => s.ToClient()).ToList();
-            index.DepartmentModels = UnitOfWork.Instance.DepartmentRepository.GetAll().Select(s => s.ToClient()).ToList();
-            index.UserprofilModels = UnitOfWork.Instance.UserprofilRepository.GetByUserId(currentUser).Select(s => s.ToClient()).ToList();
-
-            return View(index);
-        }
-
-        public ActionResult CreateVehicle()
-        {
-            VehicleModel v = new VehicleModel();
-            v.DepartmentModel = UnitOfWork.Instance.DepartmentRepository.GetAll().Select(s => s.ToClient()).ToList();
-            //IndexViewModel index = new IndexViewModel();
-            //index.DepartmentModels = UnitOfWork.Instance.DepartmentRepository.GetAll().Select(s => s.ToClient()).ToList();
-            return View(v);
-        }
-        [HttpPost]
-        public ActionResult CreateVehicle(VehicleModel obj)
-        {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
-            int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
-
-            Vehicle v = VehicleMapper.ToGlobal(obj);
-            v.Department_id = obj.IdDepartment;
-            v.User_id = currentUser;
-            UnitOfWork.Instance.VehicleRepository.Insert(v);
-            return RedirectToAction("Vehicles");
-        }
-
-        public ActionResult DeleteVehicle(int Id)
-        {
-            UnitOfWork.Instance.VehicleRepository.DeleteUpdate(Id);
-            Vehicle v = UnitOfWork.Instance.VehicleRepository.GetOne(Id);
-
-            Report r = new Report();
-
-            r.Vehicle_id = Id;
-            r.Vehicle_Reference = v.Mark + " " + v.Model;
-            r.Chassis = v.Chassis_number;
-            r.Registration = v.Create_date;
-            r.Deregistration = v.Last_update;
-
-            UnitOfWork.Instance.ReportRepository.Insert(r);
-
-            return RedirectToAction("Vehicles");
-        }
-
-        public ActionResult Reports()
-        {
-            IndexViewModel indexViewModel = new IndexViewModel();
-            indexViewModel.Events = UnitOfWork.Instance.EventRepository.GetAll().Select(s => s.ToClient()).ToList();
-            List<ReportModel> reports = UnitOfWork.Instance.ReportRepository.GetAll().Select(s => s.ToClient()).ToList();
-            
-            indexViewModel.Reports = reports.GroupJoin(indexViewModel.Events,
-                r => r.Vehicle_id,
-                e => e.Vehicle_id,
-                (r, e) => new ReportModel()
-                {
-                    Vehicle_Reference = r.Vehicle_Reference,
-                    Chassis = r.Chassis,
-                    Registration = r.Registration,
-                    Deregistration = r.Deregistration,
-                    virtualEvents = e
-                });
-            return View(indexViewModel);
-        }
-        #endregion
-        
         public void sendMail(string adresseFrom, string strMailTo, string strMailCc, string strSujet, string strBody,
             string strPiecesJointes)
         {
@@ -638,6 +519,7 @@ namespace CarPack.Controllers
             Entity.Create_date = DateTime.Now;
             UnitOfWork.Instance.EventActionRepository.Insert(Entity);
         }
-
+        
+        #endregion
     }
 }
