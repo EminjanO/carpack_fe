@@ -288,9 +288,13 @@
 
             function GenerateCalender(events, resources) {
                 //console.log(events);
-                console.log(resources, " source is here")
+                console.log(resources, " source is here");
                 $('#calender').fullCalendar('destroy');
+                $('#calender').fullCalendar('today');
                 $('#calender').fullCalendar({
+                    //validRange: {
+                    //    start: '2018-09-03'
+                    //},
                     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                     contentHeight: 500,
                     defaultDate: new Date(),
@@ -330,7 +334,7 @@
                     },
                     selectable: true,
                     select: function (start, end) {
-                        if (start.isBefore(moment())) {
+                        if(start.isBefore(moment())) {
                             $('#calendar').fullCalendar('unselect');
                             return false;
                         }; 

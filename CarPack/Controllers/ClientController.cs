@@ -14,20 +14,31 @@ namespace CarPack.Controllers
 {
     public class ClientController : Controller
     {
-        #region Clients
+        static List<User> Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
+        IndexViewModel index = new IndexViewModel();
 
-        public ActionResult Clients()
+        //private IRepository<int, Client> clientRepo;
+        //private IRepository<int, User> userRepo;
+
+        //public ClientController(IRepository<int, Client> clientRepo)
+        //{
+        //    this.clientRepo = clientRepo;
+        //}
+        public ViewResult Clients()
         {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
             int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
-
-            IndexViewModel index = new IndexViewModel();
+            //int currentUser = 1;
             index.Clients = UnitOfWork.Instance.ClientRepository.GetAll().Select(s => s.ToClient()).ToList();
+            //index.Clients = clientRepo.Entities.Select(s => s.ToClient()).ToList();
             index.UserprofilModels = UnitOfWork.Instance.UserprofilRepository.GetByUserId(currentUser).Select(s => s.ToClient()).ToList();
 
             return View(index);
         }
-        
+        public ViewResult ClientsTest()
+        {
+            List<Client> c =  UnitOfWork.Instance.ClientRepository.GetAll().ToList();
+            return View(c);
+        }
         public ActionResult CreateClient()
         {
             return View();
@@ -35,8 +46,9 @@ namespace CarPack.Controllers
         [HttpPost]
         public ActionResult CreateClient(ClientModel obj)
         {
-            var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
+            //var Userlist = UnitOfWork.Instance.UserRepository.GetAll().ToList();
             int currentUser = Userlist.Where(s => String.Equals(s.User_windows_authent, User.Identity.Name, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
+
             Client c = new Client();
             c.User_id = currentUser;
             c.Client_number = obj.Client_number;
@@ -57,7 +69,5 @@ namespace CarPack.Controllers
             UnitOfWork.Instance.ClientRepository.DeleteUpdate(Id);
             return RedirectToAction("Clients");
         }
-
-        #endregion
     }
 }
